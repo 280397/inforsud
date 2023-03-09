@@ -19,9 +19,9 @@ $this->load->view('dist/_partials/header');
                         <div class="card-header">
                             <h4>Data Dokter</h4>
                             <div>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#create">
-                                    Create
-                                </button>
+                                <div>
+                                    <?php echo anchor(site_url('Dokter/create'), 'Create', 'class="btn btn-primary"'); ?>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">

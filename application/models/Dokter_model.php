@@ -43,6 +43,7 @@ class Dokter_model extends CI_Model
     {
         $this->db->like('id', $q);
         $this->db->or_like('nama', $q);
+        $this->db->or_like('img', $q);
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }
@@ -53,6 +54,7 @@ class Dokter_model extends CI_Model
         $this->db->order_by($this->id, $this->order);
         $this->db->like('id', $q);
         $this->db->or_like('nama', $q);
+        $this->db->or_like('img', $q);
         $this->db->limit($limit, $start);
         return $this->db->get($this->table)->result();
     }

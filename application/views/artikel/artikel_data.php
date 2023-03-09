@@ -47,27 +47,4 @@ $this->load->view('dist/_partials/header');
 </div>
 
 
-<!-- Modal -->
-<div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="createTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Create kategori</h5>
-
-            </div>
-            <form action="<?php echo site_url('Kategori/create_action') ?>" method="post">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="nama">Nama Kategori *</label>
-                        <input type="text" class="form-control" name="nama" id="nama" required autofocus>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <a href="<?= site_url('Artikel') ?>" class="btn btn-secondary">Close</a>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <?php $this->load->view('dist/_partials/footer'); ?>

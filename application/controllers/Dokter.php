@@ -32,11 +32,14 @@ class Dokter extends CI_Controller
     {
         $data = array(
             'button' => 'Create',
+            'title' => 'Dokter',
+            'page' => 'Dokter',
             'action' => site_url('Dokter/create_action'),
             'id' => set_value('id'),
             'nama' => set_value('nama'),
+            'img' => set_value('img'),
         );
-        $this->load->view('dokter/dokter_data', $data);
+        $this->load->view('dokter/dokter_form', $data);
     }
 
     public function create_action()
@@ -46,34 +49,59 @@ class Dokter extends CI_Controller
         if ($this->form_validation->run() == FALSE) {
             $this->create();
         } else {
-            $data = array(
-                'nama' => $this->input->post('nama', TRUE),
-            );
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $config['max_size']      = '2048';
+            $config['upload_path']   = './gambar/dokter/';
+            $config['file_name']   = 'dokter -' . date('ymd') . '-' . substr(md5(rand()), 0, 10);
+            $this->load->library('upload', $config);
 
-            $this->Kategori_model->insert($data);
-            $this->session->set_flashdata('message', 'Create Record Success');
-            redirect(site_url('Kategori'));
+            if (@$_FILES['img']['name'] != null) {
+
+                if ($this->upload->do_upload('img')) {
+                    $data = array(
+                        'nama' => $this->input->post('nama', TRUE),
+                        'img' => $this->upload->data('file_name')
+                    );
+                    $this->Dokter_model->insert($data);
+                    if ($this->db->affected_rows() > 0) {
+                        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
+                    }
+                    redirect('Dokter');
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Error! Data tidak tersimpan</div>');
+                    redirect('Dokter/create');
+                }
+            } else {
+
+
+                $this->Dokter_model->insert($data);
+                if ($this->db->affected_rows() > 0) {
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
+                }
+                redirect('Dokter');
+            }
         }
     }
 
     public function update($id)
     {
-        $row = $this->Kategori_model->get_by_id($id);
+        $row = $this->Dokter_model->get_by_id($id);
 
         if ($row) {
             $data = array(
-                'title' => 'Kategori',
-                'page' => 'Update Kategori',
+                'title' => 'Dokter',
+                'page' => 'Update Dokter',
                 'button' => 'Update',
-                'action' => site_url('Kategori/update_action'),
+                'action' => site_url('Dokter/update_action'),
                 'id' => set_value('id', $row->id),
                 'nama' => set_value('nama', $row->nama),
+                'img' => set_value('img', $row->img),
             );
             // $this->load->view('satuan/tb_satuan_form', $data);
-            $this->load->view('kategori/kategori_edit', $data);
+            $this->load->view('dokter/dokter_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Kategori'));
+            redirect(site_url('Dokter'));
         }
     }
 
@@ -84,33 +112,68 @@ class Dokter extends CI_Controller
         if ($this->form_validation->run() == FALSE) {
             $this->update($this->input->post('id', TRUE));
         } else {
-            $data = array(
-                'nama' => $this->input->post('nama', TRUE),
-            );
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $config['max_size']      = '2048';
+            $config['upload_path']   = './gambar/dokter/';
+            $config['file_name']   = 'dokter-' . date('ymd') . '-' . substr(md5(rand()), 0, 10);
+            $this->load->library('upload', $config);
 
-            $this->Kategori_model->update($this->input->post('id', TRUE), $data);
-            $this->session->set_flashdata('message', 'Update Record Success');
-            redirect(site_url('Kategori'));
+            if (@$_FILES['img']['name'] != null) {
+                if ($this->upload->do_upload('img')) {
+
+                    //replace image
+                    $cari = $this->Dokter_model->get_by_id($this->input->post('id', TRUE));
+                    // var_dump($cari)
+                    if ($cari->img != null) {
+                        $target_file = './gambar/dokter/' . $cari->img;
+                        unlink($target_file);
+                    }
+
+                    $data = array(
+                        'nama' => $this->input->post('nama', TRUE),
+                        'img' => $this->upload->data('file_name')
+                    );
+                    $this->Dokter_model->update($this->input->post('id', TRUE), $data);
+
+                    if ($this->db->affected_rows() > 0) {
+                        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
+                    }
+                    redirect('Dokter');
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Error! Data tidak tersimpan!</div>');
+                    redirect('Dokter/update/' . $this->input->post('id', TRUE));
+                }
+            } else {
+                $data = array(
+                    'nama' => $this->input->post('nama', TRUE),
+                );
+                $this->Dokter_model->update($this->input->post('id', TRUE), $data);
+                if ($this->db->affected_rows() > 0) {
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
+                }
+                redirect('Dokter');
+            }
         }
     }
 
     public function delete($id)
     {
-        $row = $this->Kategori_model->get_by_id($id);
+        $row = $this->Dokter_model->get_by_id($id);
 
         if ($row) {
-            $this->Kategori_model->delete($id);
-            $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('Kategori'));
+            $this->Dokter_model->delete($id);
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil dihapus!</div>');
+            redirect(site_url('Dokter'));
         } else {
-            $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Kategori'));
+            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Error! Data tidak ditemukan</div>');
+            redirect(site_url('Dokter'));
         }
     }
 
     public function _rules()
     {
         $this->form_validation->set_rules('nama', 'nama', 'trim|required');
+        $this->form_validation->set_rules('img', 'img', 'trim');
 
         $this->form_validation->set_rules('id', 'id', 'trim');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
