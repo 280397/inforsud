@@ -3,13 +3,13 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Kategori extends CI_Controller
+class Dokter extends CI_Controller
 {
     function __construct()
     {
         parent::__construct();
         check_not_login();
-        $this->load->model('Kategori_model');
+        $this->load->model('Dokter_model');
         $this->load->library('form_validation');
         $this->load->library('datatables');
     }
@@ -17,41 +17,26 @@ class Kategori extends CI_Controller
     public function index()
     {
         $data = array(
-            'title' => "Data Kategori"
+            'title' => "Data Dokter"
         );
-        $this->load->view('kategori/kategori_data', $data);
+        $this->load->view('dokter/dokter_data', $data);
     }
 
     public function json()
     {
         header('Content-Type: application/json');
-        echo $this->Kategori_model->json();
+        echo $this->Dokter_model->json();
     }
-
-    // public function read($id)
-    // {
-    //     $row = $this->Kategori_model->get_by_id($id);
-    //     if ($row) {
-    //         $data = array(
-    //             'id' => $row->id,
-    //             'nama' => $row->nama,
-    //         );
-    //         $this->load->view('satuan/tb_satuan_read', $data);
-    //     } else {
-    //         $this->session->set_flashdata('message', 'Record Not Found');
-    //         redirect(site_url('Satuan'));
-    //     }
-    // }
 
     public function create()
     {
         $data = array(
             'button' => 'Create',
-            'action' => site_url('Kategori/create_action'),
+            'action' => site_url('Dokter/create_action'),
             'id' => set_value('id'),
             'nama' => set_value('nama'),
         );
-        $this->load->view('kategori/kategori_data', $data);
+        $this->load->view('dokter/dokter_data', $data);
     }
 
     public function create_action()
