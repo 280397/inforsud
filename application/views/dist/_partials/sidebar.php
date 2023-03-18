@@ -27,6 +27,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
       <li class="<?php echo $this->uri->segment(1) == 'Kategori' ? 'active' : ''; ?>">
         <a href="<?= site_url('Kategori') ?>" class="nav-link"><i class="fas fa-sitemap"></i><span>Kategori</span></a>
       </li>
+      <li class="<?php echo $this->uri->segment(1) == 'Layanan' ? 'active' : ''; ?>">
+        <a href="<?= site_url('Layanan') ?>" class="nav-link"><i class="fas fa-sitemap"></i><span>Layanan</span></a>
+      </li>
 
       <!-- Admin Only -->
       <?php if ($this->fungsi->user_login()->level == 1) { ?>

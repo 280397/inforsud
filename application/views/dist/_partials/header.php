@@ -22,7 +22,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/modules/owlcarousel2/dist/assets/owl.theme.default.min.css">
 
   <?php
-  } elseif ($this->uri->segment(1) == "User" || $this->uri->segment(1) == "Kategori" || $this->uri->segment(1) == "Artikel" || $this->uri->segment(1) == "Poli" || $this->uri->segment(1) == "Dokter") { ?>
+  } elseif ($this->uri->segment(1) == "User" || $this->uri->segment(1) == "Kategori" || $this->uri->segment(1) == "Artikel" || $this->uri->segment(1) == "Poli" || $this->uri->segment(1) == "Dokter" || $this->uri->segment(1) == "Layanan") { ?>
     <!-- General CSS Files -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/modules/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/modules/fontawesome/css/all.min.css">
@@ -90,6 +90,7 @@ if ($this->uri->segment(2) == "layout_transparent") {
   || $this->uri->segment(1) == "Artikel"
   || $this->uri->segment(1) == "Poli"
   || $this->uri->segment(1) == "Dokter"
+  || $this->uri->segment(1) == "Layanan"
 ) {
   $this->load->view('dist/_partials/layout');
   $this->load->view('dist/_partials/sidebar');

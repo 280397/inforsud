@@ -3,13 +3,13 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Artikel extends CI_Controller
+class Layanan extends CI_Controller
 {
     function __construct()
     {
         parent::__construct();
         check_not_login();
-        $this->load->model('Artikel_model');
+        $this->load->model('Layanan_model');
         $this->load->model('Kategori_model');
         $this->load->library('form_validation');
         $this->load->library('datatables');
@@ -18,48 +18,31 @@ class Artikel extends CI_Controller
     public function index()
     {
         $data = array(
-            'title' => "Data Artikel"
+            'title' => "Data Layanan"
         );
-        $this->load->view('artikel/artikel_data', $data);
+        $this->load->view('Layanan/Layanan_data', $data);
     }
 
     public function json()
     {
         header('Content-Type: application/json');
-        echo $this->Artikel_model->json();
+        echo $this->Layanan_model->json();
     }
 
-    public function read($id)
-    {
-        $row = $this->Stok_model->get_by_id($id);
-        if ($row) {
-            $data = array(
-                'id' => $row->id,
-                'kode_barang' => $row->kode_barang,
-                'stok' => $row->stok,
-                'id_ruang' => $row->id_ruang,
-            );
-            $this->load->view('stok/tb_stok_read', $data);
-        } else {
-            $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Stok'));
-        }
-    }
 
     public function create()
     {
         $data = array(
             'button' => 'Create',
-            'title' => 'Artikel',
-            'page' => 'Artikel',
-            'action' => site_url('Artikel/create_action'),
+            'title' => 'Layanan',
+            'page' => 'Layanan',
+            'action' => site_url('Layanan/create_action'),
             'id' => set_value('id'),
-            'kate_all' => $this->Kategori_model->get_all(),
             'judul' => set_value('judul'),
-            'isi' => set_value('isi'),
-            'img_sampul' => set_value('img_sampul'),
+            'ket' => set_value('ket'),
+            'img' => set_value('img'),
         );
-        $this->load->view('artikel/artikel_form', $data);
+        $this->load->view('Layanan/Layanan_form', $data);
     }
 
     public function create_action()
@@ -74,66 +57,61 @@ class Artikel extends CI_Controller
 
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
             $config['max_size']      = '2048';
-            $config['upload_path']   = './gambar/artikel/';
-            $config['file_name']   = 'artikel -' . date('ymd') . '-' . substr(md5(rand()), 0, 10);
+            $config['upload_path']   = './gambar/layanan/';
+            $config['file_name']   = 'layanan -' . date('ymd') . '-' . substr(md5(rand()), 0, 10);
             $this->load->library('upload', $config);
 
-            if (@$_FILES['sampul']['name'] != null) {
+            if (@$_FILES['img']['name'] != null) {
 
-                if ($this->upload->do_upload('sampul')) {
+                if ($this->upload->do_upload('img')) {
                     $data = array(
-                        'kategori' => $this->input->post('kategori', TRUE),
                         'judul' => $this->input->post('judul', TRUE),
-                        'isi' => $this->input->post('isi', TRUE),
-                        'sampul' => $this->upload->data('file_name')
+                        'ket' => $this->input->post('ket', TRUE),
+                        'img' => $this->upload->data('file_name')
                     );
-                    $this->Artikel_model->insert($data);
+                    $this->Layanan_model->insert($data);
                     if ($this->db->affected_rows() > 0) {
                         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
                     }
-                    redirect('Artikel');
+                    redirect('Layanan');
                 } else {
                     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Error! Data tidak tersimpan</div>');
-                    redirect('Artikel/create');
+                    redirect('Layanan/create');
                 }
             } else {
                 $data = array(
-                    'kategori' => $this->input->post('kategori', TRUE),
                     'judul' => $this->input->post('judul', TRUE),
-                    'isi' => $this->input->post('isi', TRUE),
+                    'ket' => $this->input->post('ket', TRUE),
                 );
 
-                $this->Artikel_model->insert($data);
+                $this->Layanan_model->insert($data);
                 if ($this->db->affected_rows() > 0) {
                     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
                 }
-                redirect('Artikel');
+                redirect('Layanan');
             }
         }
     }
 
     public function update($id)
     {
-        $row = $this->Artikel_model->get_by_id($id);
-        $kate_all = $this->Kategori_model->get_all();
+        $row = $this->Layanan_model->get_by_id($id);
 
         if ($row) {
             $data = array(
                 'button' => 'Update',
                 'title' => 'Update',
-                'page' => 'Artikel',
-                'action' => site_url('Artikel/update_action'),
+                'page' => 'Layanan',
+                'action' => site_url('Layanan/update_action'),
                 'id' => set_value('id', $row->id),
-                'kategori' => set_value('kategori', $row->kategori),
-                'kate_all' => $kate_all,
                 'judul' => set_value('judul', $row->judul),
-                'isi' => set_value('isi', $row->isi),
-                'sampul' => set_value('sampul', $row->sampul),
+                'ket' => set_value('ket', $row->ket),
+                'img' => set_value('img', $row->img),
             );
-            $this->load->view('artikel/artikel_form', $data);
+            $this->load->view('Layanan/Layanan_form', $data);
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Artikel'));
+            redirect(site_url('Layanan'));
         }
     }
 
@@ -147,72 +125,69 @@ class Artikel extends CI_Controller
 
             $config['allowed_types'] = 'gif|jpg|png|jpeg';
             $config['max_size']      = '2048';
-            $config['upload_path']   = './gambar/artikel/';
-            $config['file_name']   = 'artikel-' . date('ymd') . '-' . substr(md5(rand()), 0, 10);
+            $config['upload_path']   = './gambar/layanan/';
+            $config['file_name']   = 'Layanan-' . date('ymd') . '-' . substr(md5(rand()), 0, 10);
             $this->load->library('upload', $config);
 
-            if (@$_FILES['sampul']['name'] != null) {
-                if ($this->upload->do_upload('sampul')) {
+            if (@$_FILES['img']['name'] != null) {
+                if ($this->upload->do_upload('img')) {
 
                     //replace image
-                    $cari = $this->Artikel_model->get_by_id($this->input->post('id', TRUE));
+                    $cari = $this->Layanan_model->get_by_id($this->input->post('id', TRUE));
                     // var_dump($cari)
-                    if ($cari->sampul != null) {
-                        $target_file = './gambar/artikel/' . $cari->sampul;
+                    if ($cari->img != null) {
+                        $target_file = './gambar/layanan/' . $cari->img;
                         unlink($target_file);
                     }
 
                     $data = array(
-                        'kategori' => $this->input->post('kategori', TRUE),
                         'judul' => $this->input->post('judul', TRUE),
-                        'isi' => $this->input->post('isi', TRUE),
-                        'sampul' => $this->upload->data('file_name')
+                        'ket' => $this->input->post('ket', TRUE),
+                        'img' => $this->upload->data('file_name')
                     );
-                    $this->Artikel_model->update($this->input->post('id', TRUE), $data);
+                    $this->Layanan_model->update($this->input->post('id', TRUE), $data);
 
                     if ($this->db->affected_rows() > 0) {
                         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
                     }
-                    redirect('Artikel');
+                    redirect('Layanan');
                 } else {
                     $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Error! Data tidak tersimpan!</div>');
-                    redirect('Artikel/update/' . $this->input->post('id', TRUE));
+                    redirect('Layanan/update/' . $this->input->post('id', TRUE));
                 }
             } else {
                 $data = array(
-                    'kategori' => $this->input->post('kategori', TRUE),
                     'judul' => $this->input->post('judul', TRUE),
-                    'isi' => $this->input->post('isi', TRUE),
+                    'ket' => $this->input->post('ket', TRUE),
                 );
-                $this->Artikel_model->update($this->input->post('id', TRUE), $data);
+                $this->Layanan_model->update($this->input->post('id', TRUE), $data);
                 if ($this->db->affected_rows() > 0) {
                     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data berhasil disimpan!</div>');
                 }
-                redirect('Artikel');
+                redirect('Layanan');
             }
         }
     }
 
     public function delete($id)
     {
-        $row = $this->Artikel_model->get_by_id($id);
+        $row = $this->Layanan_model->get_by_id($id);
 
         if ($row) {
-            $this->Artikel_model->delete($id);
+            $this->Layanan_model->delete($id);
             $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('Artikel'));
+            redirect(site_url('Layanan'));
         } else {
             $this->session->set_flashdata('message', 'Record Not Found');
-            redirect(site_url('Artikel'));
+            redirect(site_url('Layanan'));
         }
     }
 
     public function _rules()
     {
         $this->form_validation->set_rules('judul', 'Judul', 'trim|required');
-        $this->form_validation->set_rules('kategori', 'kategori', 'trim|required');
-        $this->form_validation->set_rules('isi', 'isi', 'trim');
-        $this->form_validation->set_rules('img_sampul', 'img_sampul', 'trim');
+        $this->form_validation->set_rules('ket', 'ket', 'trim');
+        $this->form_validation->set_rules('img', 'img', 'trim');
 
         $this->form_validation->set_rules('id', 'id', 'trim');
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
